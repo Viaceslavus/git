@@ -474,6 +474,17 @@ int cmd_reset(int argc, const char **argv, const char *prefix)
 			die(_("Cannot do %s reset with paths."),
 					_(reset_type_names[reset_type]));
 	}
+
+	if (reset_type == HARD) {
+        	struct object_id head_oid;
+        	get_oid("HEAD", &head_oid);
+
+        	if(!lookup_object(the_repository, &head_oid)) {
+            		if(read_cache() > 0)
+                		die(_("Hard reset isn`t allowed before the first commit."));
+        	}
+    	}
+
 	if (reset_type == NONE)
 		reset_type = MIXED; /* by default */
 
